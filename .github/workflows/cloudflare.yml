@@ -42,7 +42,6 @@ jobs:
     if: github.event_name != 'pull_request'
     environment:
       name: cloudflare-production
-      url: https://syszerocool.${{ vars.CLOUDFLARE_WORKERS_SUBDOMAIN }}.workers.dev
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
