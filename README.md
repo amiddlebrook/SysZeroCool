@@ -58,8 +58,7 @@ This runs TypeScript checking, Node's built-in test runner, then a production Vi
 3. In this repository, open **Settings → Secrets and variables → Actions** and add the following **repository secrets**:
    - `CLOUDFLARE_API_TOKEN`: Cloudflare deploy token
    - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID
-4. Optional: create an Actions **repository variable** `CLOUDFLARE_WORKERS_SUBDOMAIN` containing your Workers subdomain name (without `.workers.dev`) so GitHub displays the correct environment URL.
-5. Merge the restoration pull request into `master` or choose **Actions → SysZero · Validate & Deploy → Run workflow**.
+4. Merge the restoration pull request into `master` or choose **Actions → SysZero · Validate & Deploy → Run workflow**.
 
 Every pull request triggers typechecking, deterministic unit tests and build. Every push to `master` runs the same checks and automatically deploys `dist/` through the official `cloudflare/wrangler-action@v3`.
 
