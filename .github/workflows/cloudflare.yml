@@ -68,3 +68,27 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+
+      - name: Smoke test public deployment
+        env:
+          SITE_URL: https://syszerocool.averymiddlebrook2014.workers.dev
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent --show-error --location --max-time 20 "$SITE_URL/" -o /tmp/syszero-index.html &&
+               grep -q '<title>SysZero' /tmp/syszero-index.html; then
+              echo "Cloudflare returned the expected SysZero HTML."
+              asset_path="$(grep -oE 'src="/assets/[^"]+\.js"' /tmp/syszero-index.html | head -1 | cut -d '"' -f2)"
+              if [ -z "$asset_path" ]; then
+                echo "::error::The site did not include its built JavaScript bundle."
+                exit 1
+              fi
+              curl --fail --silent --show-error --location --max-time 20 "$SITE_URL$asset_path" -o /tmp/syszero-app.js
+              test -s /tmp/syszero-app.js
+              echo "Cloudflare also serves the application's JavaScript bundle."
+              exit 0
+            fi
+            echo "Attempt $attempt of 5 failed; retrying after propagation."
+            sleep 5
+          done
+          echo "::error::Cloudflare deployment URL did not return the expected application."
+          exit 1
